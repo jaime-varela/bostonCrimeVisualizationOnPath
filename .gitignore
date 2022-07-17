@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# Restrict data
+/data/*.csv
+/data/*.xlsx
+config.py
