@@ -131,5 +131,6 @@ dmypy.json
 
 # Restrict data
 /data/*.csv
+/data/chicago/*.csv
 /data/*.xlsx
 config.py
