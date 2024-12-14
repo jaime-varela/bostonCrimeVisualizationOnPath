@@ -4,32 +4,31 @@ from re import X
 import pandas as pd
 import numpy as np
 
-crime2015 = pd.read_csv('crime-incident-reports-2015.csv',dtype={'INCIDENT_NUMBER': 'str','OFFENSE_CODE': 'str'})
-crime2016 = pd.read_csv('crime-incident-reports-2016.csv',dtype={'INCIDENT_NUMBER': 'str','OFFENSE_CODE': 'str'})
-crime2017 = pd.read_csv('crime-incident-reports-2017.csv',dtype={'INCIDENT_NUMBER': 'str','OFFENSE_CODE': 'str'})
-crime2018 = pd.read_csv('crime-incident-reports-2018.csv',dtype={'INCIDENT_NUMBER': 'str','OFFENSE_CODE': 'str'})
-crime2019 = pd.read_csv('crime-incident-reports-2019.csv',dtype={'INCIDENT_NUMBER': 'str','OFFENSE_CODE': 'str'})
-crime2020 = pd.read_csv('crime-incident-reports-2020.csv',dtype={'INCIDENT_NUMBER': 'str','OFFENSE_CODE': 'str'})
-crime2021 = pd.read_csv('crime-incident-reports-2021.csv',dtype={'INCIDENT_NUMBER': 'str','OFFENSE_CODE': 'str'})
-crime2022 = pd.read_csv('crime-incident-reports-2022.csv',dtype={'INCIDENT_NUMBER': 'str','OFFENSE_CODE': 'str'})
+import os
+import pandas as pd
 
-allDfs = [
-    crime2015,
-    crime2016,
-    crime2017,
-    crime2018,
-    crime2019,
-    crime2020,
-    crime2021,
-    crime2022
-]
+# List to store DataFrames
+dataframes = []
 
-areEqual = all([len(allDfs[0].columns.intersection(df.columns)) 
-      == allDfs[0].shape[1] for df in allDfs])
+# Get all CSV files in the current directory
+csv_files = [file for file in os.listdir('.') if file.endswith('.csv')]
 
-print(areEqual)
+# Read and append each CSV file to the list
+for csv_file in csv_files:
+    try:
+        df = pd.read_csv(csv_file)
+        dataframes.append(df)
+        print(f"Successfully read {csv_file}")
+    except Exception as e:
+        print(f"Error reading {csv_file}: {e}")
 
-allData = pd.concat(allDfs)
+# Concatenate all DataFrames
+if dataframes:
+    allData = pd.concat(dataframes, ignore_index=True)
+    print("All CSV files have been concatenated into a single DataFrame.")
+else:
+    print("No CSV files found in the current directory or all failed to load.")
+    exit(1)
 
 errorCodesDf = pd.read_csv('rmsoffensecodes.csv',dtype={'CODE': 'str'})
 errorCodesDic = {}
