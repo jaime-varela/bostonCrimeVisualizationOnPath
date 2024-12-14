@@ -15,8 +15,10 @@ csv_files = [file for file in os.listdir('.') if file.endswith('.csv')]
 
 # Read and append each CSV file to the list
 for csv_file in csv_files:
+    if csv_file.endswith('offensecodes.csv') or csv_file.endswith('Boston.csv'):
+        continue
     try:
-        df = pd.read_csv(csv_file)
+        df = pd.read_csv(csv_file,dtype={'INCIDENT_NUMBER': 'str','OFFENSE_CODE': 'str'})
         dataframes.append(df)
         print(f"Successfully read {csv_file}")
     except Exception as e:
@@ -31,19 +33,23 @@ else:
     exit(1)
 
 errorCodesDf = pd.read_csv('rmsoffensecodes.csv',dtype={'CODE': 'str'})
-errorCodesDic = {}
+errorCodesDict = {}
 errorCodesDf = errorCodesDf.reset_index()  # make sure indexes pair with number of rows
 
 for index, row in errorCodesDf.iterrows():
     code = row['CODE']
     name = row['NAME']
-    errorCodesDic[code] = name
+    errorCodesDict[code] = name
 
+
+print(errorCodesDict)
 print("total crimes " + str(len(allData.index)))
 
-allData['OFFENSE_CODE'] = allData['OFFENSE_CODE'].apply(lambda x: errorCodesDic[x] if x in errorCodesDic.keys() else "No code available")
+allData['OFFENSE_CODE_NAME'] = allData['OFFENSE_CODE'].apply(lambda x: errorCodesDict[x] if x in errorCodesDict.keys() else "No code available")
 
 
 allData.to_csv('crimesBoston.csv',index=False)
+num_crimes_unidentified = len(allData[allData['OFFENSE_CODE_NAME'] == "No code available"].index)
+print(f'number of non-identified crimes = {num_crimes_unidentified}')
 
-print(len(allData[allData['OFFENSE_CODE'] == "No code available"].index))
+print(f'precent not indentified {num_crimes_unidentified/len(allData.index)}')
