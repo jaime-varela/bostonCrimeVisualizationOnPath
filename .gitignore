@@ -134,3 +134,11 @@ dmypy.json
 /data/chicago/*.csv
 /data/*.xlsx
 config.py
+
+
+.RData
+.Rhistory
+data/*.npz
+data/processed/*.npz
+models/*.pth
+models/*.mod

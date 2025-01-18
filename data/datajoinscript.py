@@ -14,8 +14,11 @@ dataframes = []
 csv_files = [file for file in os.listdir('.') if file.endswith('.csv')]
 
 # Read and append each CSV file to the list
+file_exclusion_list = ['offensecodes.csv','Boston.csv',
+                       'violentCrimes.csv','homicides.csv']
+
 for csv_file in csv_files:
-    if csv_file.endswith('offensecodes.csv') or csv_file.endswith('Boston.csv'):
+    if csv_file in file_exclusion_list:
         continue
     try:
         df = pd.read_csv(csv_file,dtype={'INCIDENT_NUMBER': 'str','OFFENSE_CODE': 'str'})
